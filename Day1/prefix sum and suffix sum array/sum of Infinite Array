@@ -1,0 +1,49 @@
+PROBLEM STATEMENT
+Given an array “A” of N integers and you have also defined the new array “B” as a concatenation of array “A” for an infinite number of times.
+For example, if the given array “A” is [1,2,3] then, infinite array “B” is [1,2,3,1,2,3,1,2,3,.......].
+Now you are given Q queries, each query consists of two integers “L“ and “R”. Your task is to find the sum of the subarray from index “L” to “R” (both inclusive) in the infinite array “B” for each query.
+Note :
+The value of the sum can be very large, return the answer as modulus 10^9+7.
+Input Format :
+The first line of input contains a single integer T, representing the number of test cases or queries to be run.
+
+Then the T test cases follow. 
+
+The first line of each test case contains a single integer N, denoting the size of the array “A”.
+
+The second line of each test case contains N single space-separated integers, elements of the array “A”.
+
+The third line of each test case contains a single integer Q, denoting the number of queries.
+
+Then each of the Q lines of each test case contains two single space-separated integers L, and R denoting the left and the  right index of the infinite array “B” whose sum is to be returned. 
+Output Format :
+For each test case, print Q space-separated integers that denote the answers of the given Q queries. 
+Print the answer to each test case in a separate line.
+Note :
+You do not need to print anything, it has already been taken care of. Just implement the given function.
+Constraints :
+1 <= T <= 100
+1 <= N <= 10^4   
+1 <= A[i] <= 10^9
+1 <= Q <= 10^4
+1 <= L <= R <= 10^18
+
+Time Limit: 1sec
+APPROACH 1
+Instead of creating a new infinite array B which has a repeated array A elements in the form [A1, A2,... AN, A1, A2,... AN, A1, A2,... AN…....]. We will traverse array A, again and again, to find the sum as array A is only repeating in infinite array B.
+So the brute force approach is, for each query,
+we run a loop from L to R, and for each index i, add the value at index (i%N) of the array A i.e A[i%N] to sum. So this way we can find the sum of the required subarray from index L to R in an infinite array B.
+APPROACH 2
+The better idea is to first create the sum array in which sumArray[i] stores the sum from (A[0]+....+A[i]). Now instead of iterating from L to R like in the previous approach, we find the sum using our sumArray[].
+
+Let’s take an example, where array A = [1,2,3] and we have to find the sum of the subarray of the infinite array(as shown in below fig) from index 3 to 10 (0-based indexing). 
+
+Now instead of iterating from 3 to 10 and then calculate the sum. We can observe one thing that we are going to traverse the array A again and again so instead of doing this, we can first find the sum from index 0 to index 10 say a, and then find the sum from index 0 to 2 say b, then subtract b from a as a-b, which is the sum of subarray from index 3  to 10 in an infinite array B.
+Now to find the sum, from index 0 to any index X, we first find how many number of times the given array A can comes completely upto index X. which can be simply found by X / N say count , and sum will be count * sumArray[N] where N is the length of array A. Now for the remaining part of the subarray sum can be found by sumArray[ (X % N)]. 
+Consider array A = {1, 2, 3} and we have to find the sum between L= 1 and R = 5. Then Till index 5 the array A repeats itself one time i.e {1, 2, 3, 1, 2} which can be calculated as R/N i.e 1 and the remaining elements till index 5 are {1, 2} which can be calculated as R%N. So the sum till index 5 is R/N * sumArray(N) + sumArray(R%N).
+So this way we can find the sum without iterating from L to R.
+
+<____________________________________________________________________________________________________________________________________________>
+
+SOLUTION:
+
