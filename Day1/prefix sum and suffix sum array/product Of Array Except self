@@ -1,0 +1,98 @@
+PROBLEM STATEMENT
+You have been given an integer array/list (ARR) of size N. You have to return an array/list PRODUCT such that PRODUCT[i] is equal to the product of all the elements of ARR except ARR[i]
+ Note :
+Each product can cross the integer limits, so we should take modulo of the operation. 
+
+Take MOD = 10^9 + 7 to always stay in the limits.
+Follow Up :
+Can you try solving the problem in O(1) space?
+Input Format :
+The first line contains an integer 'T' which denotes the number of test cases or queries to be run. Then the test cases follow.
+
+The first line of each test case or query contains an integer 'N' representing the size of the array/list.
+
+The second line contains 'N' single space-separated integers representing the elements in the array/list.
+Output Format :
+For each test case, print the elements of the 'PRODUCT' array separated by a single space. 
+
+Output for every test case will be printed in a separate line.
+Important Note :
+You are required to return the product array and no need to print the result explicitly. It has already been taken care of.
+Constraints :
+1 <= T <= 100
+0 <= N <= 10^5
+0 <= ARR[i] <= 10^5
+
+Time Limit: 1 sec
+APPROACH 1
+Traverse through every index of the array/list and compute the product of all the other elements in the array/list. This would require a new array/list of the same size as that of the input array/list in which we will store the product of the elements corresponding to every index.
+
+1. Create a new array/list to store the product at every index
+
+2. Start traversing on the input array/list till its length
+
+3. For every ith iteration, find the product of all the elements to the left of i [0 - (i - 1)] and the product of all the elements to the right of i [(i + 1)  - (n -1)]
+
+4. Take the product of left and right and assign the result to the i-th position in the new array keeping the result for every i
+
+5. Repeat the above two steps till the end of the input array
+
+6. Return the array in which you stored the products
+
+APPROACH 2
+The idea is to create prefixProduct array/list and suffixProduct array/list. Both the arrays/list will be of the same length as that of the input array/list.
+
+1. Assign 1 initially to all the elements of the suffix and prefix product arrays/list.
+
+2. Create a suffix and prefix arrays/list for the input array/list.
+
+3. The prefixProduct array can be created by traversing the input array from the start till the end and filling prefixProduct[i] with the product of the elements from index 0 to index i.
+
+4. The suffixProduct array can be created by traversing the input array from the end till the start and filling suffixProduct[i] with the product of the elements from index n - 1 to index i, where n is the size of the input array
+
+5. Run over the input array/list and for each i in the input array/list, assign the product of suffixProduct[i] and prefixProduct[i]
+
+6. Make a answerArray where answerArray[i] = suffixProduct[i] * prefixProduct[i]
+
+7. Return the answerArray
+
+APPROACH 3
+Create an output array
+Traverse the input array from the start till the end
+Update the i'th element of the output array with the product of elements of the input array from index 0 to index i - 1. This can be done by just maintaining a single product variable and updating it each iteration
+Now, traverse the input array from the end till the start
+Multiply the i'th element of the output array with the product of elements of the input array from index i + 1 to index n - 1, where n is the size of the input array. Just like before, this can also be done by maintaining a single product variable
+Return the output array
+
+<______________________________________________________________________________________________________________>
+
+SOLUTION:
+public class Solution {
+
+ 
+
+   public static int[] getProductArrayExceptSelf(int[] arr) {
+
+   int[] result = new int[arr.length];
+
+   for (int i = 0; i < result.length; i++) result[i] = 1;
+
+   int left = 1, right = 1;
+
+   for (int i = 0, j = arr.length - 1; i < arr.length - 1; i++, j--) {
+
+       left *= arr[i];
+
+       right *= arr[j];
+
+       result[i + 1] *= left;
+
+       result[j - 1] *= right;
+
+   }
+
+   return result;
+
+   }
+}
+
