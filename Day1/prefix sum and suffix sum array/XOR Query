@@ -1,0 +1,123 @@
+PROBLEM STATEMENT
+Assume you initially have an empty array say ‘ARR’.
+You need to return the updated array provided that some ‘Q’ number of queries were performed on this array.
+The queries are of two types:
+1. 1 ‘VAL’, for this type of query, you need to insert the integer 'VAL' to the end of the array.
+2. 2 ‘VAL’, for this type of query, you need to take the bitwise XOR of all the elements of the array with 'VAL' i.e each element of the array ‘ARR’ will be updated as ‘ARR[i]’ = ‘ARR[i]’ ^ ‘VAL’ ( ^ denotes the bitwise XOR operation).
+Note:
+1) Bitwise XOR operation takes two numbers and performs XOR operation on every bit of those two numbers. For example, consider two numbers 2 and 3 their bitwise XOR will be 1. Because the binary representation of 2 is '10' and the binary representation of 3 is '11'. And XOR of '10' and '11' will be '01'(because XOR evaluates to 0 if the corresponding bits are the same in both the operands, otherwise it evaluates to 1), which is equal to 1.
+
+2) The first query will always be a type 1 query.
+
+3) Note that the ith query should be performed on the array obtained after performing (i-1)th query on the array and so on i.e the changes of each query are updated on the original array itself.
+Input Format:
+The first line contains an integer ‘T’ which represents the number of test cases.
+
+The first line of each test case contains an integer ‘Q’ denoting the number of queries. 
+
+Then each of the ‘Q’ lines contains two space-separated integers denoting the query to be performed.
+Output Format:
+For each test case, return the updated array after processing all the queries.
+Note:
+You do not need to print anything, it has already been taken care of. Just implement the given function. 
+Constraints:
+1 <= T <= 10
+1 <= Q <= 10^5
+1 <= Val <= 10^9
+
+Time Limit: 1sec
+Follow Up:
+Can you solve this in constant i.e O(1) space complexity? Space used to return the list will not be counted as an extra space.
+APPROACH 1
+Approach:
+It is a brute force approach where we will create an empty array initially of size 10^5 + 1.
+Now, whenever we have a query of type 1 we will insert the value of VAL in the array. And when the query of type 2 comes then we will iterate through our array and perform an XOR operation with VAL to every value present in our array.
+Finally, we will return our array.
+ 
+
+Algorithm:
+Create an array ans.
+Now iterate through all the queries and for each query perform the following operation:
+If the query is of type 1 then insert the VAL in the back of the array.
+If the query is of type 2 then:
+Iterate through the array ans and perform XOR operation with the value of VAL to every element present in the array i.e ans[i] = ans[i] ^ VAL.
+Finally, return the array ans.
+APPROACH 2
+Approach:
+We derive the basic idea for this approach from the problem where we are given a range L to R and we have to add a number to all the elements in this range in the given array, to solve this we maintain a prefix array (initialized with all 0’s) and we add that number at index L and we subtract that number at index R+1 in the prefix array and then we compute the cumulative sum(i.e prefix[i] = prefix[i]+prefix[i-1]), (so that the number is added to all elements from index L to R, and not afterward) of this prefix array after processing all the queries, and then we iterate through the array and add the prefix calculated for that index with the element present at that index.
+So we try to solve this problem with a similar idea, here instead of adding and subtracting the number we perform XOR operation and in our case, L will be 0(considering 0-based indexing) and R will be equal to the size of the current size of the array because here we have to perform XOR of the queried integer with all the elements present in the array at the time of the query.
+So we initialize an array(say XOR) of size Q+1( where Q is the number of queries), and then as soon as we get any query of type 1 we add the value of VAL to the array and if we get any query of type 2 then we will perform XOR[0] = XOR[0]^VAL, and simultaneously XOR[current size of array] = XOR[current size of array]^VAL.
+After processing all the Q queries, we perform cumulative XOR operation, i.e we iterate through the XOR array and perform XOR[i] = XOR[i]^XOR[i-1].
+After getting the cumulative XOR values perform the XOR operation between the array element and the element present at the corresponding index in the XOR array, i.e ARR[i] = ARR[i]^XOR[i]. And then print all the array elements.
+ 
+
+Algorithm:
+Create an array ans.
+Create an array xorArray of the size of 10^5+1 initialized with 0.
+Traverse through all the queries and for each query perform the following operation:
+If the query is of type of 1 the add it to the back of the array ans.
+If the query is of type 2 then:
+xorArray[0] ^= queries[i][1]
+xorArray[current size of the array ans] ^= queries[i][1]
+Now traverse though the array ans  and perform the following steps:
+If it is the first element of the array ans then ans[i] = ans[i] ^ xorArray[i].
+Otherwise, do xorArray[i] = xorArray[i] ^ xorArray[i - 1] and ans[i] = ans[i] ^ xorArray[i].
+Finally return the array ans.
+APPROACH 3
+Approach:
+In this approach, we basically try to optimize the space using the property of XOR that is  ‘A(XOR)A’ = 0 where A is an integer.
+So here we maintain a variable named flag, initialized to 0.
+Now we start processing queries, whenever we receive any query of type 1, we XOR the queried value VAL with the current value of the flag variable and insert that into the array. And when we receive any query of type 2 we modify the value of the flag variable as flag = flag XOR (queried value VAL).
+After processing all the queries we XOR all the values in the array with the value of the variable flag obtained after processing all the queries. This is because we have pushed the values XORed with the value that came before them but we have to XOR them with the values that come after them. So, this operation will nullify the effect of the previous XOR and the resultant will be the desired value i.e the value after performing XOR operation with all the type 2 query values that came after them.
+After performing the above operation return the array values.
+For example: Let Q = 3, consider the following sequence of queries:
+1 2, So we will add 2^flag to the array since flag = 0,  2^flag will be equal to 2, and the array now becomes{2}.
+2 3, Now we will update the value of the variable flag which was initially set to 0, flag = flag^3, so flag becomes 3.
+1 1, Now we will add 1^flag to the array i.e 1^3= 2 to the array. So the array becomes {2,2}.
+Now all the queries have been processed, and after processing the value of the flag is 3 so we will update all the elements of the array as ARR[i] = ARR[i]^flag. So, the array becomes {2^3, 2^3} i.e {1,1}, which will be returned as the final answer.
+ 
+
+Algorithm:
+Create an array ans.
+Create a variable flag initialized to 0.
+Now iterate through all the queries and for each query perform the following operations:
+If the query is of type 1 then insert at the back of the array ans (queries[i][1] ^ flag).
+Otherwise, update the value of the flag as flag ^ queries[i][1].
+Now iterate through the array ans and for each element in the array update it as ans[i] = ans[i] ^ flag.
+Finally, return the array ans.
+<___________________________________________________________________________________________________________________>
+
+SOLUTION:
+import java.util.ArrayList;
+
+public class Solution {
+
+	public static ArrayList<Integer> xorQuery(ArrayList<ArrayList<Integer>> queries) {
+
+		// Write your code here
+        ArrayList<Integer> ans=new ArrayList<>();
+        int N=100000+1;
+        int xorarray[]=new int[N];
+        for(int i=0;i<queries.size();i++){
+            int type=queries.get(i).get(0);
+            int VAL=queries.get(i).get(1);
+            
+            if(type==1) ans.add(VAL);
+            else{
+                xorarray[0] ^= VAL;
+				xorarray[ans.size()] ^= VAL;
+            }
+        }
+        
+        for(int i=0;i<ans.size();i++){
+            
+            if(i==0)
+                ans.set(i,ans.get(i)^xorarray[i]);
+            else{
+                xorarray[i] = xorarray[i] ^ xorarray[i - 1] ; 
+                ans.set(i,ans.get(i)^xorarray[i]);
+            }
+        }
+        return ans;
+	}
+}
