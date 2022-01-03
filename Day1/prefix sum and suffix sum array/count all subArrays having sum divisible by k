@@ -1,0 +1,169 @@
+PROBLEM STATEMENT
+Given an array ‘ARR’ and an integer ‘K’, your task is to find all the count of all sub-arrays whose sum is divisible by the given integer ‘K’.
+Note:
+If there exists no subarray in the given sequence whose sum is divisible by ‘K’ then simply return ‘0’.
+Example:
+Suppose the given array is ‘ARR’ = { 5, 0, 2, 3, 1} and ‘K = 5’.
+As we can see in below image, there are a total of 6 subarrays that have the total sum divisible by ‘K’
+So we return the integer 6.
+
+Input Format:
+The first line of input contains an integer ‘T’ denoting the number of test cases.
+The next ‘2*T’ lines represent the ‘T’ test cases.
+
+The first line of each test case contains two space-separated integers the first integer ‘N’ will denote the number of elements in the array and the second integer denotes integer ‘K’.
+
+The second line of each test case contains ‘N’ space-separated integer that is elements of the array.
+Output Format
+For each test case, print an integer that is the count of all subarray that sum is divisible by ‘K’.
+Note:
+You are not required to print the output explicitly, it has already been taken care of. Just implement the function.
+Constraints:
+1 <= T <= 50
+1 <= K,N <= 10^4
+-10^9 <= ARR[i] <= 10^9
+
+Time limit: 1 second
+APPROACH 1
+The basic idea is that try each and every possible subarray and find the sum of the current subarray and check if the current sum is divisible by ‘K’. 
+
+ 
+
+To implement this approach we use two nested loops and one ‘COUNT’ variable to store all subarray with sum divisible by ‘K’ and initially ‘COUNT’ is ‘0’.
+Iterate outer loop ‘i’ from ‘0’ to ‘N-1’ for every position of ‘ARR’.
+Add check current sum is divisible by ‘K’
+If divisible then increase ‘COUNT’ by ‘1’.
+Iterate an inner loop ‘j’ from ‘i’ to ‘N-1’ and ‘j’ will represent a subarray from ‘i' to ‘j’
+Store sum of subarray from ‘i’ to ‘j’ in a ‘CUR_SUM’ variable.
+Add ‘ARR[j]’ in ‘CUR_SUM’.
+Check every point is ‘CUR_SUM’ is divisible by ‘K’ or not
+If ‘CUR_SUM % K == 0 ’ then increase the value of ‘COUNT’ by ‘1’.
+Iterate for the next value of ‘i’.
+In the end, return ‘COUNT’.
+APPROACH 2
+Let’s consider the sum of subarray ( ‘i’ to ‘j’ ) is divisible by ‘K’ and we can represent the sum of a subarray ( ‘i’ to ‘j’ ) = ( subarray sum (‘0’ to ‘j’ ) - subarray sum ( ‘0’ to ‘i-1’) ). 
+
+ 
+
+The Sum of any subarray can be written as  ‘SUM = QUO * K + REM’, where ‘QUO’ is quotient and ‘REM’ is remainder. 
+
+Sum of subarray ( ‘i’ to ‘j’ ) =  ( K * QUO2+ REM2 ) - ( K * QUO1 + REM2 ) = K * ( QUO2 - QUO1 ) +( REM2 - REM1 ). 
+
+We can see sum of subarray ( ‘i’ to ‘j’ ) will be divisible by ‘K’ if ‘REM2 - REM1 = 0’ or ‘REM1 == REM2’. 
+
+If sum of subarray from ‘i’ to ‘j’ is divisible by ‘K’ then ( ARR[0] + ARR[1] …… + ARR[i] ) % K == ( ARR [0] + ARR[1] + ARR[ 2] + ……. + ARR[j]) % K must be follow.
+
+ 
+
+To implement this approach we need ‘REM_ARR’ with the size of ‘K’ in which we store frequency of every remainder occurrence means ‘REM_ARR[i]’ represent - how many prefixes have remainder ‘i’ with ‘K’.
+Initially, all the elements of ‘REM_ARR’ are ‘0’.
+Use a variable ‘PRE’ to store the sum of all the elements from ‘0’ to the current position.
+Iterate a loop ‘i’ from ‘0’ to ‘N-1’ and add ‘ARR[i]’ in ‘PRE’.
+Update ‘PRE % K’ frequency in ‘REM_ARR’
+If the value of ‘PRE % K’ is ‘X’ then increase the value of ‘REM_ARR[X]’ by ‘1’.
+After filling ‘REM_ARR’ with all the prefix sum, use a ‘COUNT’ variable to store the count of all the subarray has sum divisible by ‘K’.
+Iterate elements of ‘REM_ARR’ and count all the subarray has sum is divisible by ‘K’.
+Use ‘i’ loop to iterate ‘REM_ARR’
+If value of ‘REM_ARR[i] >1’ then let’s consider ‘REM_ARR[i]’ to ‘X’.
+Total number of subarray with sum divisible by ‘K’ is ‘( X * ( X - 1 ) ) / 2’ because we have ‘X’ option we have to choose all pair of size ‘2’.
+In the end, add ‘REM_ARR[0]’ in ‘COUNT’ because of the remainder ‘0’.
+We have to choose only one subarray with the remainder ‘0’ at a time. In other cases in which we need to choose a single pair of all possible choices.
+Return ‘COUNT’.
+APPROACH 3
+Let’s consider the sum of subarray ( ‘i’ to ‘j’ ) is divisible by ‘K’ and we can represent the sum of a subarray ( ‘i’ to ‘j’ ) = ( subarray sum (‘0’ to ‘j’ ) - subarray sum ( ‘0’ to ‘i-1’) ). 
+
+The Sum of any subarray can be written as  ‘SUM = QUO * K + REM’, where 'QUO' is quotient and ‘REM’ is remainder. 
+
+Sum of subarray ( ‘i’ to ‘j’ ) =  ( K * QUO2 + REM2 ) - ( K * QUO1 + REM2 ) = K * ( QUO2 - QUO1 ) +( REM2 - REM1 ). 
+
+We can see the sum of subarray ( ‘i’ to ‘j’ ) will be divisible by K, if ‘REM2 - REM1 = 0’ or ‘REM1 == REM2’. 
+
+From the above intuition, we can say that if we are currently at position ‘i’ and the current remainder is ‘X’ and ‘X’ remainder is already present at index ‘IDX’ then subarray ( ‘IDX + 1’ to ‘i’ ) has to sum is divisible by ‘K’.    
+
+ 
+
+ 
+
+Suppose given 'K' is '7'.
+
+The first subarray that has a sum divisible by '7' is ( 1, 2, 4 ) and the sum is ‘7’.
+The second subarray that has a sum divisible by '7' is ( 4, 3 ) and the sum is ‘7’.
+Observation - the remainder is ‘3’ at the index '4'. The figure shows that the remainder ‘3’ is already present at the index '2' so that sum of elements from indices '2+1' to '4' is divisible by '7'.
+
+The third subarray that has a sum divisible by '7' is ( 3, 2, 1, 3, 2, 3 ) and the sum is ‘14’. The remainder is ‘0’ at the index '9' and the remainder ‘0’ is already present at index '3' so that sum of elements from indices '3+1' to '9' is divisible by '7'.
+The fourth subarray that has sum divisible by '7' is ( 1, 2, 4, 3, 2, 1, 3, 2, 3 ) and the sum is ‘21’ because the sum of elements from indices '0' to '9’ is ‘21’ and ‘21’ is divisible by ‘7’.
+The fifth subarray that has sum divisible by '7' is ( 2, 3, 2) and the sum is ‘7’ because the remainder is ‘2’ at the index '10' and the remainder '2' is already present at index '7' so that sum of elements from indices '7+1' to '10' is divisible by '7'.
+     
+
+Implementation-
+
+ 
+
+To implement this approach we need a hashmap to call it ‘REM_MAP’, which stores reminders and frequency of remainder and adds ‘0’ remainder with frequency ‘1’ because we can consider empty subarray has sum and remainder is ‘0’.
+A variable ‘COUNT’ in which we store the count of all the subarray has sum divisible by ‘K’ and initially, value is ‘0’.
+Iterate ‘i’ from ‘0’ to ‘N-1’.
+Calculate the sum of all the elements from index ‘0’ to 'i’ in a variable ‘SUM’.
+And find current remainder with ‘SUM % K’
+If the current remainder is present in ‘REM_MAP the added frequency of the current remainder in ‘COUNT’ variable and update frequency of current remainder by adding one
+Let’s take an example, suppose the current remainder is ‘3’ and ‘REM_MAP’ has a key-value pair of ‘3: 4’ which means remainder 3 hash 4 frequency then add ‘4’ in ‘COUNT’ and update ‘3: 4’ with ‘3: 5’ by adding one more frequency.
+If ‘REM_MAP’ has no current remainder then add current remainder with frequency = 1.
+Iterate for next ‘i’.
+In the end, return ‘COUNT’.
+
+<_________________________________________________________________________________________________________>
+
+SOLUTION:
+
+import java.util.ArrayList;
+
+public class Solution {
+
+    public static int subArrayCount(ArrayList < Integer > arr, int k) {
+
+    	 // Write your code here.
+        int n=arr.size();
+        int sumArray[]=new int[n];
+        sumArray[0]=arr.get(0);
+        int count=0;
+        for(int i=1;i<n;i++){
+            sumArray[i]=sumArray[i-1]+arr.get(i);
+        }
+        for(int i=0;i<n;i++){
+            if(sumArray[i]%k==0) count++;
+            for(int j=0;j<i;j++){
+                if((sumArray[i]-sumArray[j])%k==0) count++;
+            }
+        }
+        return count;
+    }
+    
+}
+THIS SOLUTION GIVES TLE
+***********************************************************************************************
+OPTIMISED SOLUTION (USING REMAINDER ARRAY)
+
+import java.util.ArrayList;
+
+public class Solution {
+
+    public static int subArrayCount(ArrayList < Integer > arr, int k) {
+
+    	int remArr[]=new int[k];
+        int pre=0;
+        int n=arr.size();
+        for(int i=0;i<n;i++){
+            pre+=arr.get(i);
+            remArr[((pre % k) + k) % k]++;
+        }
+        int count=0;
+        for(int i=0;i<k;i++){
+            if(remArr[i]>1)
+                count+= (remArr[i] * (remArr[i] - 1)) / 2;
+        }
+        count+=remArr[0];
+        
+        return count;
+    }
+    
+}
+
